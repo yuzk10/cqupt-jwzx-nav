@@ -1,0 +1,44 @@
+name: 每日更新教务数据
+
+# 触发方式：
+# 1. 定时：每天 UTC 00:00（= 北京时间早上 8:00）自动运行
+#    注意：GitHub Actions 的 cron 使用 UTC 时间，北京时间 = UTC + 8
+# 2. 手动：仓库页面 Actions 标签页可随时手动触发
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+# 提交 data.json 需要仓库写权限
+permissions:
+  contents: write
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 抓取教务在线数据（失败自动保留旧数据）
+        run: python fetch.py
+
+      - name: 提交并推送 data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过提交"
+          else
+            git commit -m "chore: 更新教务数据 $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
