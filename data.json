@@ -97,6 +97,6 @@
     }
   ],
   "deadlines": [],
-  "lastUpdate": "2026-09-19 15:07:21",
-  "fetchStatus": "success"
+  "lastUpdate": "2026-09-20 03:50:57",
+  "fetchStatus": "partial: semester 抓取失败: 403 Client Error: Forbidden for url: http://jwzx.cqupt.edu.cn/rump_frontend/access_forbidden/; notices 抓取失败: 403 Client Error: Forbidden for url: http://jwzx.cqupt.edu.cn/rump_frontend/access_forbidden/"
 }
